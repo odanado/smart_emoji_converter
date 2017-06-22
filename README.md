@@ -15,8 +15,8 @@ $ docker build -t smart-emoji-converter .
 
 token は https://api.slack.com/methods/emoji.list/test を参照してください
 ```
-$ docker run --rm -v $PWD:/src smart-emoji-converter python download.py ${domain} ${token} ${save_dir}
-$ docker run --rm -v $PWD:/src smart-emoji-converter python preprocess.py ${image_dir} ${save_file}
+$ docker run --rm -v $PWD:/src smart-emoji-converter python download.py ${domain} ${token} imgs
+$ docker run --rm -v $PWD:/src smart-emoji-converter python preprocess.py imgs emoji.json
 ```
 3. Create config
 
