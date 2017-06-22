@@ -12,14 +12,16 @@ $ docker build -t smart-emoji-converter .
 ```
 
 2. Preprocess
+
 token は https://api.slack.com/methods/emoji.list/test を参照してください
 ```
 $ docker run --rm -v $PWD:/src smart-emoji-converter python download.py ${domain} ${token} ${save_dir}
 $ docker run --rm -v $PWD:/src smart-emoji-converter python preprocess.py ${image_dir} ${save_file}
 ```
 3. Create config
+
 `rtmbot.conf` を作成してください  
-https://api.slack.com/slack-apps からSlack Botを作成しBot用のtokenを取得してください
+tokenは https://api.slack.com/slack-apps からSlack Botを作成し取得してください
 ```
 DEBUG: True
 SLACK_TOKEN: "xoxb-11111111111-222222222222222"
