@@ -1,6 +1,7 @@
 import os
 import json
 import random
+from functools import lru_cache
 
 from rtmbot.core import Plugin
 
@@ -11,12 +12,11 @@ CONVERT_COMMAND = ('convert -pointsize 140 -font /usr/share/fonts/truetype/mplus
                    '-annotate 0 "{str}" -gravity center -fill black -size 128x128 xc:none {file}')
 
 
-def convert(c):
+def create_image(c):
     filename = '/tmp/{:032x}.png'.format(random.getrandbits(128))
     cmd = CONVERT_COMMAND.format(str=c, file=filename)
     os.system(cmd)
     return utils.load_image(filename)
-    return calc_feature(filename)
 
 
 class SmartConverter(Plugin):
@@ -37,22 +37,25 @@ class SmartConverter(Plugin):
         text = data['text']
         channel = data['channel']
         if not text.startswith('<@{}>'.format(bot_id)):
-        # if not data['channel'].startswith("D"):
+            # if not data['channel'].startswith("D"):
             return
 
         text = ' '.join(text.split(' ')[1:])
         output_text = ''
         # print(text)
         for c in text:
-            img1 = convert(c)
-            ret = [(compare_image(img1, img2), emoji)
-                   for emoji, img2 in self.emoji_images.items()]
-            # print(sorted(ret)[:3])
-            ret = min(ret)
-            if ret[0] < 1000:
-                output_text += ':{}:'.format(ret[1])
-            else:
-                output_text += c
+            output_text += self.convert(c)
 
         print(output_text)
         self.outputs.append((channel, output_text))
+
+    @lru_cache(maxsize=1024)
+    def convert(self, c):
+        img1 = create_image(c)
+        ret = [(compare_image(img1, img2), emoji)
+               for emoji, img2 in self.emoji_images.items()]
+        ret = min(ret)
+        if ret[0] < 1000:
+            return ':{}:'.format(ret[1])
+        else:
+            return c
