@@ -1,0 +1,9 @@
+version: "2"
+services:
+    app:
+        build: .
+        volumes:
+            - .:/src
+        container_name: emoji-bot
+        restart: always
+        command: rtmbot
