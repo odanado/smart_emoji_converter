@@ -1,5 +1,7 @@
 FROM python:3.6
 
+ENV PYTHONUNBUFFERED 1
+
 RUN apt update && apt upgrade -y
 RUN apt install -y fonts-mplus
 
