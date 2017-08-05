@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import time
 from functools import lru_cache
 
 from rtmbot.core import Plugin
@@ -30,6 +31,7 @@ class SmartConverter(Plugin):
         super(SmartConverter, self).__init__(*args, **kwargs)
 
     def process_message(self, data):
+        start = time.time()
         bot_id = self.slack_client.api_call('auth.test')['user_id']
         if 'text' not in data:
             return
@@ -47,6 +49,8 @@ class SmartConverter(Plugin):
             output_text += self.convert(c)
 
         print(output_text)
+        elapsed_time = time.time() - start
+        output_text = '<@{}> {} ({:.2f} sec)'.format(user, output_text, elapsed_time)
         self.outputs.append((channel, output_text))
 
     @lru_cache(maxsize=1024)
